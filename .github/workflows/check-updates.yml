@@ -250,11 +250,12 @@ jobs:
           branch = os.environ.get('GITHUB_REF_NAME', 'main')
           subprocess.run(['git', 'checkout', '-B', branch], check=True)
 
-          templates = []
-          for d in os.listdir('.'):
-              tpath = os.path.join(d, 'template')
-              if os.path.isdir(d) and os.path.isfile(tpath):
-                  templates.append(Path(tpath))
+          templates = sorted(
+              p for p in Path(".").glob("**/template")
+              if ".git" not in p.parts
+              and ".github" not in p.parts
+          )
+          print(f"Found {len(templates)} templates")
 
           changed_packages = []
           gh_token = os.environ.get('GITHUB_TOKEN')
@@ -396,6 +397,9 @@ jobs:
               changed_packages.append(pkgname)
               print(f"Successfully processed {pkgname}")
 
+          print(f"Changed packages: {changed_packages}")
+          print(f"updates_found={'true' if changed_packages else 'false'}")
+
           if changed_packages:
               Path('changed_packages.txt').write_text('\n'.join(changed_packages) + '\n')
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
@@ -436,4 +440,5 @@ jobs:
           echo "Starting relay race with: $LIST"
           gh workflow run "${WORKFLOW_NAME}" \
             --ref "${{ github.ref_name }}" \
-            -f package_list="$LIST"
+            -f package_list="$LIST" \
+            -f force_rebuild=false
