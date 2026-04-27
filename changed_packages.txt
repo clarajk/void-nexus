@@ -1,1 +1,2 @@
-niri-git
+dank-material-shell
+dsearch
