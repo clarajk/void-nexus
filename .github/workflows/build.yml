@@ -4,17 +4,21 @@ on:
   workflow_dispatch:
     inputs:
       package_list:
-        description: 'Space-separated list of packages to build'
+        description: "Space-separated list of packages to build"
         required: true
       force_rebuild:
-        description: 'Force recompile even if binary exists in Release'
+        description: "Force recompile even if binary exists in Release"
         type: boolean
         required: false
         default: false
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
-  NODE_OPTIONS: '--no-warnings'
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  NODE_OPTIONS: "--no-warnings"
+
+permissions:
+  contents: write
+  actions: write
 
 jobs:
   build:
@@ -27,9 +31,9 @@ jobs:
       run:
         shell: bash
     env:
-      ARCH: 'x86_64'
-      BOOTSTRAP: 'x86_64'
-      TEST: '0'
+      ARCH: "x86_64"
+      BOOTSTRAP: "x86_64"
+      TEST: "0"
     steps:
       - name: Prepare container
         shell: sh
@@ -182,7 +186,7 @@ jobs:
         run: |
           set -e
           mkdir -p public/x86_64
-          
+
           ls -1 custom-templates-temp/ | while read -r pkg_name; do
             [ ! -d "custom-templates-temp/$pkg_name" ] && continue
             tmpl="custom-templates-temp/$pkg_name/template"
@@ -203,11 +207,11 @@ jobs:
             for pkg in *.xbps; do
               xbps-rindex --privkey /tmp/private.pem --sign-pkg "$pkg" || true
             done
-            
+
             echo "Generating repodata index..."
             xbps-rindex -f -a *.xbps || true
             xbps-rindex --privkey /tmp/private.pem --signedby "Void Nexus Build Bot <actions@github.com>" --sign . || true
-            
+
             echo "Generating packages.json for the website..."
             echo "[" > packages.json
             first=1
@@ -221,15 +225,15 @@ jobs:
               first=0
             done
             echo -e "\n]" >> packages.json
-            
+
             gh release view rolling -R "$REPO" 2>/dev/null \
               || gh release create rolling -R "$REPO" \
                    --title "Void Nexus Rolling Binaries" \
                    --notes "Automated XBPS Repository" \
                    --prerelease
-            
+
             echo "Uploading XBPS repo files to GitHub Release..."
-            
+
             retry_upload() {
               local file="$1"
               local max_retries=3
@@ -242,19 +246,19 @@ jobs:
               echo "::error::Failed to upload $file after $max_retries attempts"
               return 1
             }
-            
+
             retry_upload "x86_64-repodata"
-            
+
             for pkg in *.xbps; do
               retry_upload "$pkg"
             done
-            
+
             for sig in *.sig2; do
               [ -f "$sig" ] && retry_upload "$sig"
             done
-            
+
             retry_upload "packages.json"
-            
+
             rm -f /tmp/private.pem
           fi
 
@@ -267,7 +271,7 @@ jobs:
           REMAINING="${PKGS[@]:1}"
           if [ -n "$REMAINING" ]; then
             echo "Relaying to next packages: $REMAINING"
-            gh workflow run "Build and Deploy Custom XBPS" \
+            gh workflow run build.yml \
               --ref "${GITHUB_REF_NAME}" \
               --repo "${{ github.repository }}" \
               -f package_list="$REMAINING" \
