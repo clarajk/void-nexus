@@ -425,7 +425,7 @@ jobs:
             echo "Relay race skipped: No packages changed."
             exit 0
           fi
-          WORKFLOW_NAME="Build and Deploy Custom XBPS"
+          WORKFLOW_NAME="build.yml"
           CHANGED=$(cat changed_packages.txt)
           ORDERED=()
           while IFS= read -r pkg; do
