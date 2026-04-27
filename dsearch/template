@@ -1,6 +1,6 @@
 # Template file for 'dsearch'
 pkgname=dsearch
-version=0.2.1
+version=0.2.0
 revision=2
 build_style=go
 go_import_path="github.com/AvengeMedia/danksearch"
