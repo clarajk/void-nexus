@@ -87,7 +87,7 @@ jobs:
       - name: Checkout custom templates
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.TOKEN }}
           path: custom-templates-temp
 
       - name: Parse Package List
@@ -111,7 +111,7 @@ jobs:
 
       - name: Restore Repository from GitHub Release
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.TOKEN }}
         run: |
           mkdir -p hostdir/binpkgs
           echo "Downloading existing packages from rolling release..."
@@ -121,7 +121,7 @@ jobs:
             xbps-rindex -a *.xbps || true
             cd ../..
           fi
-          echo "repository=/__w/void-nexus/void-nexus/hostdir/binpkgs" >> etc/conf
+          echo "repository=$(pwd)/hostdir/binpkgs" >> etc/conf
 
       - name: Build self‑healing shlibs map
         run: |
@@ -181,7 +181,7 @@ jobs:
 
       - name: Build and Upload Signed Repo to GitHub Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
           REPO: ${{ github.repository }}
         run: |
           set -e
@@ -264,7 +264,7 @@ jobs:
 
       - name: Trigger Relay Race (no artifact)
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.TOKEN }}
         run: |
           LIST="${{ env.PACKAGE_LIST }}"
           read -r -a PKGS <<< "$LIST"
