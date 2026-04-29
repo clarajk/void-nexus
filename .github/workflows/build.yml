@@ -83,13 +83,11 @@ jobs:
           REPO="https://repo-default.voidlinux.org/current"
           xbps-install -S -R "$REPO" -yu xbps || true
           xbps-install -S -R "$REPO" -yu || true
-          xbps-install -S -R "$REPO" -y bash curl git grep openssl tar xz shadow sudo base-devel file github-cli zstd jq
+          xbps-install -S -R "$REPO" -y bash curl git grep openssl tar xz shadow sudo base-devel file github-cli zstd jq mold clang
           git config --global --add safe.directory '*'
 
       - name: Configure mold linker
         run: |
-          ./xbps-src -y install mold
-          ./xbps-src -y install clang
           cat >> etc/conf <<'EOF'
           export RUSTFLAGS="-C linker=clang link-arg=-fuse-ld=mold"
           export LDFLAGS="-fuse-ld=mold"
