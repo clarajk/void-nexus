@@ -86,15 +86,6 @@ jobs:
           xbps-install -S -R "$REPO" -y bash curl git grep openssl tar xz shadow sudo base-devel file github-cli zstd jq mold clang
           git config --global --add safe.directory '*'
 
-      - name: Configure mold linker
-        run: |
-          cat >> etc/conf <<'EOF'
-          export RUSTFLAGS="-C linker=clang link-arg=-fuse-ld=mold"
-          export LDFLAGS="-fuse-ld=mold"
-          export CFLAGS="${CFLAGS:-}"
-          export CXXFLAGS="${CXXFLAGS:-}"
-          EOF
-
       - name: Clone void-packages
         run: |
           set -e
@@ -104,6 +95,13 @@ jobs:
           echo "XBPS_CHROOT_CMD=ethereal" >> etc/conf
           echo "XBPS_ALLOW_CHROOT_BREAKOUT=yes" >> etc/conf
           echo "XBPS_MAKEJOBS=$(nproc)" >> etc/conf
+          cat >> etc/conf <<'EOF'
+          export RUSTFLAGS="-C linker=clang -C link-arg=-fuse-ld=mold"
+          export LDFLAGS="-fuse-ld=mold"
+          export CFLAGS="${CFLAGS:-}"
+          export CXXFLAGS="${CXXFLAGS:-}"
+          EOF
+          echo "RUSTFLAGS=$RUSTFLAGS"
           rm -f common/hooks/pre-pkg/99-pkglint.sh
 
       - name: Inject Real-Time Shlibs Hook
