@@ -59,7 +59,4 @@ do_install() {
             ln -sf /usr/lib/${f} ${DESTDIR}/opt/zen-browser/${f}
         fi
     done
-
-    # 7. Install License directly from the source distribution directory
-    vlicense ${XBPS_SRCDISTDIR}/${pkgname}-${version}/LICENSE
 }
