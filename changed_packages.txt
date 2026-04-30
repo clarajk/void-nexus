@@ -1,1 +1,2 @@
-helium-browser-bin
+openai-codex-bin
+zen-browser
