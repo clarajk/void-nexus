@@ -11,22 +11,10 @@ maintainer="Quietcraft <https://github.com/Ackerman-00>"
 license="MPL-2.0"
 homepage="https://www.zen-browser.app/"
 
-case "${XBPS_TARGET_MACHINE}" in
-x86_64*)
-    _upstream_arch=x86_64
-    _checksum=87978f0854fc279191b4f95a41bdb0c5b7df6f6b6c1d986c97ef75915cd6686c
-    ;;
-aarch64*)
-    _upstream_arch=aarch64
-    _checksum=78d45f75527146b59f49e806d220b7872091443965b727132703edd110661988
-    ;;
-*) broken="No distfiles available for this target" ;;
-esac
+_upstream_arch=x86_64
 
-distfiles="https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-${_upstream_arch}.tar.xz
- https://raw.githubusercontent.com/zen-browser/desktop/refs/heads/dev/LICENSE>LICENSE"
-checksum="0019dfc4b32d63c1392aa264aed2253c1e0c2fb09216f8e2cc269bbfb8bb49b5
- c76f740d1521b9bed9ca7a04ad526c310493c62621b1341d623b431736533b30"
+distfiles="https://github.com/zen-browser/desktop/releases/download/${version}/zen.linux-${_upstream_arch}.tar.xz"
+checksum=65df3ffeb31f8046aca55ad70d6cf0c5130c25b1e8e470a047e5732b98137f19
 
 do_install() {
     vmkdir opt/zen-browser
@@ -43,7 +31,7 @@ do_install() {
     if [ -f "${FILESDIR}/zen.desktop" ]; then
         vinstall ${FILESDIR}/zen.desktop 0644 usr/share/applications/
     fi
-    
+
     if [ -f "${FILESDIR}/policies.json" ]; then
         vmkdir opt/zen-browser/distribution
         vinstall ${FILESDIR}/policies.json 0644 opt/zen-browser/distribution/
@@ -71,7 +59,7 @@ do_install() {
             ln -sf /usr/lib/${f} ${DESTDIR}/opt/zen-browser/${f}
         fi
     done
-    
+
     # 7. Install License directly from the source distribution directory
     vlicense ${XBPS_SRCDISTDIR}/${pkgname}-${version}/LICENSE
 }
