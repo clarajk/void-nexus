@@ -107,7 +107,7 @@ jobs:
               #   rust-v1.2.3
               #   codex-v1.2.3
               #   release-1.2.3
-              m = re.search(r'(\d+(?:\.\d+)+(?:[._+-]?(?:alpha|beta|rc|pre)?\d*)?)', tag, re.I)
+              m = re.search(r'(\d+(?:\.\d+)+(?:[._+-]?(?:alpha|beta|rc|pre)?\d*[a-z]*)?)', tag, re.I)
               if m:
                   return m.group(1)
           
