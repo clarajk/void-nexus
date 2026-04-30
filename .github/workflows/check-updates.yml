@@ -99,11 +99,31 @@ jobs:
               except Exception: pass
               return None, None
 
+          def normalize_version_tag(tag):
+              tag = str(tag or '').strip()
+          
+              # Handles:
+              #   v1.2.3
+              #   rust-v1.2.3
+              #   codex-v1.2.3
+              #   release-1.2.3
+              m = re.search(r'(\d+(?:\.\d+)+(?:[._+-]?(?:alpha|beta|rc|pre)?\d*)?)', tag, re.I)
+              if m:
+                  return m.group(1)
+          
+              return tag.lstrip('v')
+          
+          
           def get_latest_github_release(owner, repo, gh_headers):
               try:
-                  resp = requests.get(f'https://api.github.com/repos/{owner}/{repo}/releases/latest', headers=gh_headers, timeout=20).json()
-                  return resp.get('tag_name', '').lstrip('v')
-              except Exception: pass
+                  resp = requests.get(
+                      f'https://api.github.com/repos/{owner}/{repo}/releases/latest',
+                      headers=gh_headers,
+                      timeout=20
+                  ).json()
+                  return normalize_version_tag(resp.get('tag_name', ''))
+              except Exception:
+                  pass
               return None
 
           def get_latest_gitlab_tag(host, project_path):
