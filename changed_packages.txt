@@ -1,1 +1,3 @@
-quickshell-git
+brave-browser
+niri-git
+openai-codex-bin
