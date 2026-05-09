@@ -1,1 +1,3 @@
-zed
+faugus-launcher
+openai-codex-bin
+zen-browser
