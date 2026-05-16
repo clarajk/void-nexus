@@ -1,2 +1,1 @@
-niri-git
-zed
+heroic-games-launcher
