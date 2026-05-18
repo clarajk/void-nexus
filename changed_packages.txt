@@ -1,1 +1,1 @@
-faugus-launcher
+openai-codex-bin
