@@ -1,6 +1,6 @@
 # Template file for 'openai-codex-bin'
 pkgname=openai-codex-bin
-version=0.131.0
+version=0.132.0
 revision=1
 archs="x86_64"
 short_desc="OpenAI Codex CLI"
@@ -8,7 +8,7 @@ maintainer="Clara Keller <js.pwns@gmail.com>"
 license="Apache-2.0"
 homepage="https://openai.com/codex/"
 distfiles="https://github.com/openai/codex/releases/download/rust-v${version}/codex-x86_64-unknown-linux-musl.tar.gz"
-checksum=f5b26732b76c9543742f7937a7c88f879e00c0a73b673008043a5cee63e8361d
+checksum=8b64432ee4ef5b1d7d197aad4535a276bc85223f4e4163769c0e1015cda883b2
 
 do_install() {
 	vbin codex-x86_64-unknown-linux-musl codex
