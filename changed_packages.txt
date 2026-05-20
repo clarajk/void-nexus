@@ -1,1 +1,1 @@
-openai-codex-bin
+zed
