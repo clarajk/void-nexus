@@ -1,1 +1,1 @@
-brave-browser
+xwayland-satellite-git
