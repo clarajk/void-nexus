@@ -1,1 +1,1 @@
-xwayland-satellite-git
+faugus-launcher
