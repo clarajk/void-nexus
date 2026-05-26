@@ -1,1 +1,1 @@
-zed
+xwayland-satellite-git
