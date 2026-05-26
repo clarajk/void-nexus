@@ -1,1 +1,1 @@
-xwayland-satellite-git
+openai-codex-bin
