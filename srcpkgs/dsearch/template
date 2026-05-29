@@ -13,6 +13,10 @@ changelog="https://github.com/AvengeMedia/danksearch/releases"
 distfiles="https://github.com/AvengeMedia/danksearch/archive/refs/tags/v${version}.tar.gz"
 checksum=d6e34db26bb3a48eae6fb86164bd6745f4539e9ba62064a99adf6a58038253a1
 
+_abyss_source=github-release
+_abyss_repo=AvengeMedia/danksearch
+_abyss_strip=v
+
 wrksrc="danksearch-${version}"
 system_accounts="dsearch"
 # This prevents the permission denied error in INSTALL.msg

@@ -8,6 +8,10 @@ make_cmd="env -u LIBGIT2_NO_VENDOR cargo"
 make_install_args="--path crates/zed"
 make_check_args="-- --test-threads 1"
 
+_abyss_source=github-release
+_abyss_repo=zed-industries/zed
+_abyss_strip=v
+
 hostmakedepends="
   clang18
   cmake

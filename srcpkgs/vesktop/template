@@ -11,27 +11,17 @@ maintainer="Quietcraft <https://github.com/Ackerman-00>"
 license="GPL-3.0-or-later"
 homepage="https://github.com/Vencord/Vesktop"
 
-case "${XBPS_TARGET_MACHINE}" in
-    x86_64*)
-        _deb_arch=amd64
-        _deb_checksum=2d4c97abe4810703561d59c63cb12b1926f591fe1fe2bf9e914db66c6cc31cf5
-        ;;
-    aarch64*)
-        _deb_arch=arm64
-        _deb_checksum=3ba8e5b14d4eafa641f407c8720fb0ec489a9ee6276423f98e967218b5d6cd38
-        ;;
-    *)
-        broken="Unsupported architecture: ${XBPS_TARGET_MACHINE}"
-        ;;
-esac
+_abyss_source=github-release
+_abyss_repo=Vencord/Vesktop
+_abyss_strip=v
 
-distfiles="https://github.com/Vencord/Vesktop/releases/download/v${version}/vesktop_${version}_${_deb_arch}.deb"
+distfiles="https://github.com/Vencord/Vesktop/releases/download/v${version}/vesktop_${version}_amd64.deb"
 checksum=2d4c97abe4810703561d59c63cb12b1926f591fe1fe2bf9e914db66c6cc31cf5
 nostrip_files="/opt/Vesktop/vesktop"
 
 do_extract() {
     # Using our wildcard trick to handle .xz or .zst compression safely
-    bsdtar xf ${XBPS_SRCDISTDIR}/${pkgname}-${version}/vesktop_${version}_${_deb_arch}.deb data.tar.*
+    bsdtar xf ${XBPS_SRCDISTDIR}/${pkgname}-${version}/vesktop_${version}_amd64.deb data.tar.*
     bsdtar xf data.tar.* -C .
 }
 

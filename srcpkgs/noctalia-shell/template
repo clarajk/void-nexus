@@ -14,6 +14,10 @@ short_desc="A sleek and minimal desktop shell thoughtfully crafted for Wayland, 
 homepage="https://github.com/noctalia-dev/noctalia-shell"
 license="MIT"
 
+_abyss_source=github-release
+_abyss_repo=noctalia-dev/noctalia-shell
+_abyss_strip=v
+
 distfiles="https://github.com/noctalia-dev/noctalia-shell/archive/refs/tags/v${version}.tar.gz"
 checksum=1189099030b24097d2a351015d2f0290f2ff03dfc928dc4c4191cbace2b7b2ad
 
