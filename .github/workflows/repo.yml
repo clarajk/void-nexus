@@ -1,0 +1,115 @@
+name: Manage XBPS repository
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  NODE_OPTIONS: "--no-warnings"
+  ARCH: "x86_64"
+  BOOTSTRAP: "x86_64"
+  TEST: "0"
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  abyss:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/void-linux/void-glibc-full:latest
+      options: --privileged
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Update XBPS and install dependencies
+        shell: sh
+        run: |
+          set -e
+          REPO="https://repo-default.voidlinux.org/current"
+          xbps-install -Syu xbps
+          xbps-install -yu
+          xbps-install -y bash curl git grep openssl tar xz ca-certificates shadow sudo base-devel file github-cli zstd jq
+      - name: Install dredge
+        run: |
+          curl -L -o dredge.tar.gz \
+            https://github.com/clarajk/dredge/releases/latest/download/dredge-x86_64-unknown-linux-musl.tar.gz
+          
+          tar -xzf dredge.tar.gz
+          chmod +x dredge
+          install -Dm755 dredge /usr/local/bin/dredge
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: clarajk/abyss
+          fetch-depth: 1
+          path: abyss
+      - name: Update packages
+        working-directory: ./abyss
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        run: |
+            dredge update --srcpkgs ./srcpkgs
+      - name: Clone void-packages
+        uses: actions/checkout@v4
+        with:
+          repository: void-linux/void-packages
+          fetch-depth: 1
+          path: void-packages
+      - name: Bootstrap void-packages
+        working-directory: ./void-packages
+        run: |
+          ./xbps-src binary-bootstrap
+      - name: Copy abyss to void-packages
+        run: |
+          cp -r ./abyss/srcpkgs/. ./void-packages/srcpkgs/
+      - name: Restore packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          dredge restore \
+            --remote clarajk/abyss \
+            --srcpkgs ./abyss/srcpkgs \
+            --dest ./void-packages/hostdir/binpkgs
+      - name: Plan builds
+        id: plan
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          dredge plan \
+            --srcpkgs ./abyss/srcpkgs \
+            --binpkgs ./void-packages/hostdir/binpkgs \
+            --output "$GITHUB_OUTPUT"
+      - name: Build packages
+        if: ${{ steps.plan.outputs.packages != '' }}
+        working-directory: ./void-packages
+        run: |
+          for pkg in ${{ steps.plan.outputs.packages }}; do
+            ./xbps-src pkg "$pkg"
+          done
+      - name: Sign packages
+        working-directory: ./void-packages/hostdir/binpkgs
+        run: |
+          rm -f *.sig2
+          printf '%s\n' '${{ secrets.XBPS_PRIVATE_KEY }}' > /tmp/private.pem
+          chmod 600 /tmp/private.pem
+
+          for pkg in *.xbps; do
+            xbps-rindex --privkey /tmp/private.pem --sign-pkg "$pkg" --signedby '[abyss] dredge build bot'
+          done
+      - name: Index repository
+        working-directory: ./void-packages/hostdir/binpkgs
+        run: |
+          xbps-rindex -f -a *.xbps
+          xbps-rindex --privkey /tmp/private.pem --signedby '[abyss] dredge build bot' --sign .
+      - name: Publish repository
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          dredge publish \
+            --source ./void-packages/hostdir/binpkgs \
+            --remote clarajk/abyss
