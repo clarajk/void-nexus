@@ -40,9 +40,6 @@ jobs:
           xbps-install -Syu xbps
           xbps-install -yu
           xbps-install -y bash curl git grep openssl tar xz ca-certificates shadow sudo base-devel file github-cli zstd jq
-      - name: Create builder user
-        run: |
-          useradd -m -u 1001 builder
       - name: Install dredge
         run: |
           curl -L -o dredge.tar.gz \
@@ -69,13 +66,14 @@ jobs:
           repository: void-linux/void-packages
           fetch-depth: 1
           path: void-packages
-      - name: Fix workspace ownership
-        run: |
-          chown -R builder:builder "$GITHUB_WORKSPACE"
-      - name: Prepare void-packages
+      - name: Prepare xbps-src
         working-directory: ./void-packages
         run: |
-          sudo -u builder ./xbps-src binary-bootstrap
+          ln -s / masterdir
+          echo "x86_64" > /.xbps_chroot_init
+          echo "XBPS_CHROOT_CMD=ethereal" >> etc/conf
+          echo "XBPS_ALLOW_CHROOT_BREAKOUT=yes" >> etc/conf
+          echo "XBPS_MAKEJOBS=$(nproc)" >> etc/conf
       - name: Copy abyss to void-packages
         run: |
           cp -r ./abyss/srcpkgs/. ./void-packages/srcpkgs/
