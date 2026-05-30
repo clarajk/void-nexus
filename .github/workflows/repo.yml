@@ -43,7 +43,6 @@ jobs:
       - name: Create builder user
         run: |
           useradd -m -u 1001 builder
-          chown -R builder:builder "$GITHUB_WORKSPACE"
       - name: Install dredge
         run: |
           curl -L -o dredge.tar.gz \
@@ -70,6 +69,9 @@ jobs:
           repository: void-linux/void-packages
           fetch-depth: 1
           path: void-packages
+      - name: Fix workspace ownership
+        run: |
+          chown -R builder:builder "$GITHUB_WORKSPACE"
       - name: Prepare void-packages
         working-directory: ./void-packages
         run: |
@@ -82,7 +84,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         run: |
-          mkdir -p ./void-packages/hostdir/binpkgs
           dredge restore \
             --remote clarajk/abyss \
             --srcpkgs ./abyss/srcpkgs \
