@@ -2,13 +2,11 @@
 
 <img src="https://voidlinux.org/assets/img/void_bg.png" width="80" />
 
-<h1>void-nexus</h1>
+<h1>abyss</h1>
 
 <p>A cryptographically signed, self-updating package repository for Void Linux.</p>
 
-[![Build](https://img.shields.io/github/actions/workflow/status/clarajk/void-nexus/build.yml?style=for-the-badge&label=BUILD&logo=githubactions&logoColor=white)](https://github.com/clarajk/void-nexus/actions)
-&nbsp;
-[![Updates](https://img.shields.io/github/actions/workflow/status/clarajk/void-nexus/check-updates.yml?style=for-the-badge&label=AUTO-UPDATE&logo=github&logoColor=white)](https://github.com/clarajk/void-nexus/actions)
+[![Build](https://img.shields.io/github/actions/workflow/status/clarajk/void-nexus/repo.yml?style=for-the-badge&label=BUILD&logo=githubactions&logoColor=white)](https://github.com/clarajk/void-nexus/actions)
 
 <p><sup>Packages built nightly · Signed & indexed automatically · Drop-in native xbps repo</sup></p>
 
@@ -21,8 +19,14 @@
 **① Add the repository**
 
 ```bash
-echo 'repository=https://github.com/clarajk/void-nexus/releases/download/rolling' \
+echo 'repository=https://github.com/clarajk/void-nexus/releases/latest/download' \
   | sudo tee /etc/xbps.d/10-nexus.conf
+```
+
+... or with [vx](https://github.com/clarajk/vx)
+
+```bash
+vx repo add abyss https://github.com/clarajk/void-nexus/releases/latest/download
 ```
 
 **② Sync and trust the signing key**
@@ -31,12 +35,24 @@ echo 'repository=https://github.com/clarajk/void-nexus/releases/download/rolling
 sudo xbps-install -S
 ```
 
-> You'll be asked to import the RSA key for **`Void Nexus Build Bot <actions@github.com>`** — press `y` to continue.
+... or with [vx](https://github.com/clarajk/vx)
+
+```bash
+vx sync
+```
+
+> You'll be asked to import the RSA key for **`[abyss] dredge build bot <actions@github.com>`** — press `y` to continue.
 
 **③ Install anything**
 
 ```bash
 sudo xbps-install <package-name>
+```
+
+... or with [vx](https://github.com/clarajk/vx)
+
+```bash
+vx add <package-name>
 ```
 
 ---
@@ -49,14 +65,20 @@ No extra steps — packages update with your system:
 sudo xbps-install -Su
 ```
 
+... or with [vx](https://github.com/clarajk/vx)
+
+```bash
+vx update
+```
+
 ---
 
 ## 🤝 Contributing
 
 Want a package added, or spotted something broken?
 
-- **[Open an issue](https://github.com/clarajk/void-nexus/issues/new)** — request a new package or report a build failure
-- **[Submit a PR](https://github.com/clarajk/void-nexus/pulls)** — add your own template following the existing structure (one directory per package, containing a `template` file)
+- **[Open an issue](https://github.com/clarajk/abyss/issues/new)** — request a new package or report a build failure
+- **[Submit a PR](https://github.com/clarajk/abyss/pulls)** — add your own template following the existing structure (one directory per package, containing a `template` file)
 - **Package updates** are handled automatically by the workflow — no need to bump versions manually
 
 ---
@@ -71,6 +93,8 @@ Verify <code>/etc/xbps.d/10-nexus.conf</code> contains exactly:
 ```
 repository=https://github.com/clarajk/void-nexus/releases/download/rolling
 ```
+
+If you're using [vx](https://github.com/clarajk/vx), verify that repo was added correctly with <code>vx repo list --verbose</code>.
 </details>
 
 <details>
@@ -89,8 +113,8 @@ Only <code>x86_64</code> glibc is currently supported. musl and other architectu
 
 <div align="center">
 
-Made with 🖤 by [Ackerman-00](https://github.com/Ackerman-00) &nbsp;·&nbsp; Powered by [Void Linux](https://voidlinux.org)
+Originally made with 🖤 by [Ackerman-00](https://github.com/Ackerman-00) &nbsp;·&nbsp; Powered by [Void Linux](https://voidlinux.org)
 
-This fork maintained with 🖤 by [Clara](https://github.com/clarajk)
+Maintained with 🖤 by [Clara](https://github.com/clarajk)
 
 </div>
