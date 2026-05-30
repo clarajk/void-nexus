@@ -21,15 +21,11 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/void-linux/void-glibc-full:latest
+      options: --privileged
     defaults:
       run:
         shell: bash
     steps:
-      - name: Identify self
-        shell: sh
-        run: |
-          id -u
-          whoami
       - name: Update XBPS and install dependencies
         shell: sh
         run: |
@@ -64,10 +60,14 @@ jobs:
           repository: void-linux/void-packages
           fetch-depth: 1
           path: void-packages
-      - name: Bootstrap void-packages
+      - name: Prepare void-packages
         working-directory: ./void-packages
         run: |
-          ./xbps-src binary-bootstrap
+          ln -s / masterdir
+          echo "x86_64" > /.xbps_chroot_init
+          echo "XBPS_CHROOT_CMD=ethereal" >> etc/conf
+          echo "XBPS_ALLOW_CHROOT_BREAKOUT=yes" >> etc/conf
+          echo "XBPS_MAKEJOBS=$(nproc)" >> etc/conf
       - name: Copy abyss to void-packages
         run: |
           cp -r ./abyss/srcpkgs/. ./void-packages/srcpkgs/
