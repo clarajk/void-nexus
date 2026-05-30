@@ -91,7 +91,7 @@ Want a package added, or spotted something broken?
 Verify <code>/etc/xbps.d/10-nexus.conf</code> contains exactly:
 
 ```
-repository=https://github.com/clarajk/void-nexus/releases/download/rolling
+repository=https://github.com/clarajk/void-nexus/releases/latest/download/
 ```
 
 If you're using [vx](https://github.com/clarajk/vx), verify that repo was added correctly with <code>vx repo list --verbose</code>.
@@ -113,8 +113,7 @@ Only <code>x86_64</code> glibc is currently supported. musl and other architectu
 
 <div align="center">
 
-Originally made with 🖤 by [Ackerman-00](https://github.com/Ackerman-00) &nbsp;·&nbsp; Powered by [Void Linux](https://voidlinux.org)
-
-Maintained with 🖤 by [Clara](https://github.com/clarajk)
+Originally made with 🖤 by [Ackerman-00](https://github.com/Ackerman-00) &nbsp;·&nbsp; 
+Maintained with 🖤 by [Clara](https://github.com/clarajk) &nbsp;·&nbsp; Powered by [Void Linux](https://voidlinux.org)
 
 </div>
