@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: "0 */6 * * *"
   workflow_dispatch:
+    inputs:
+      rebuild:
+        description: "Force rebuild all packages"
+        type: boolean
+        required: false
+        default: false
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
@@ -72,6 +78,7 @@ jobs:
         run: |
           cp -r ./abyss/srcpkgs/. ./void-packages/srcpkgs/
       - name: Restore packages
+        if: ${{ inputs.rebuild != true }}
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         run: |
@@ -85,10 +92,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         run: |
-          dredge plan \
-            --srcpkgs ./abyss/srcpkgs \
-            --binpkgs ./void-packages/hostdir/binpkgs \
+          args=(
+            plan
+            --srcpkgs ./void-packages/srcpkgs
+            --binpkgs ./void-packages/hostdir/binpkgs
             --output "$GITHUB_OUTPUT"
+          )
+      
+          if [[ "${{ inputs.rebuild }}" == "true" ]]; then
+            args+=(--force-rebuild)
+          fi
+      
+          dredge "${args[@]}"
       - name: Push changes
         if: ${{ steps.plan.outputs.packages != '' }}
         working-directory: ./abyss
