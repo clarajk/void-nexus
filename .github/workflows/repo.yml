@@ -93,7 +93,7 @@ jobs:
         run: |
           args=(
             plan
-            --srcpkgs ./void-packages/srcpkgs
+            --srcpkgs ./abyss/srcpkgs
             --binpkgs ./void-packages/hostdir/binpkgs
             --output "$GITHUB_OUTPUT"
           )
@@ -122,7 +122,7 @@ jobs:
         working-directory: ./void-packages
         run: |
           for pkg in ${{ steps.plan.outputs.packages }}; do
-            sudo -u builder ./xbps-src pkg "$pkg"
+            ./xbps-src pkg "$pkg"
           done
       - name: Sign packages
         working-directory: ./void-packages/hostdir/binpkgs
