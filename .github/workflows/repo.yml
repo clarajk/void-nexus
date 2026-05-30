@@ -136,6 +136,7 @@ jobs:
           done
 
       - name: Sign packages
+        if: ${{ steps.plan.outputs.packages != '' }}
         working-directory: ./void-packages/hostdir/binpkgs
         run: |
           rm -f *.sig2
@@ -152,7 +153,9 @@ jobs:
         run: |
           xbps-rindex -f -a *.xbps
           xbps-rindex --privkey /tmp/private.pem --signedby '[abyss] dredge build bot' --sign .
+  
       - name: Publish repository
+        if: ${{ steps.plan.outputs.packages != '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         run: |
