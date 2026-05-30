@@ -84,6 +84,16 @@ jobs:
         run: |
           cp -r ./abyss/srcpkgs/. ./void-packages/srcpkgs/
 
+      - name: Restore packages
+        if: ${{ inputs.rebuild != true }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          dredge restore \
+            --remote clarajk/abyss \
+            --srcpkgs ./abyss/srcpkgs \
+            --dest ./void-packages/hostdir/binpkgs
+
       - name: Plan builds
         id: plan
         env:
@@ -135,16 +145,6 @@ jobs:
           for pkg in *.xbps; do
             xbps-rindex --privkey /tmp/private.pem --sign-pkg "$pkg" --signedby '[abyss] dredge build bot'
           done
-
-      - name: Restore packages
-        if: ${{ inputs.rebuild != true && steps.plan.outputs.packages != '' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        run: |
-          dredge restore \
-            --remote clarajk/abyss \
-            --srcpkgs ./abyss/srcpkgs \
-            --dest ./void-packages/hostdir/binpkgs
 
       - name: Index repository
         if: ${{ steps.plan.outputs.packages != '' }}
