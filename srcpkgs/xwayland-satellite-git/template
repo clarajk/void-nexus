@@ -1,4 +1,3 @@
-# Template file for 'xwayland-satellite-git'
 pkgname=xwayland-satellite-git
 _commit=5d1efbc9dc3ab1c10160b656e0247f3325daf0f2
 version=20260526
@@ -8,7 +7,7 @@ hostmakedepends="pkg-config clang"
 makedepends="xcb-util-cursor-devel"
 depends="xorg-server-xwayland"
 short_desc="Xwayland outside your Wayland compositor (Git Snapshot)"
-maintainer="Quietcraft <https://github.com/Ackerman-00>"
+maintainer="Clara Keller <https://github.com/clarajk>"
 license="MPL-2.0"
 homepage="https://github.com/Supreeeme/xwayland-satellite"
 

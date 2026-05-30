@@ -1,12 +1,32 @@
-# Template file for 'protonplus'
 pkgname=protonplus
 version=0.5.20
 revision=1
 build_style=meson
-hostmakedepends="meson vala pkg-config glib-devel gettext gtk4-devel json-glib-devel libadwaita-devel libarchive-devel libgee-devel libsoup3-devel desktop-file-utils appstream-glib"
-depends="gtk4 json-glib libadwaita libarchive libgee libsoup3"
+hostmakedepends="
+    meson
+    vala
+    pkg-config
+    glib-devel
+    gettext
+    gtk4-devel
+    json-glib-devel
+    libadwaita-devel
+    libarchive-devel
+    libgee-devel
+    libsoup3-devel
+    desktop-file-utils
+    appstream-glib
+"
+depends="
+    gtk4
+    json-glib
+    libadwaita
+    libarchive
+    libgee
+    libsoup3
+"
 short_desc="Compatibility tools manager for GNOME (Wine/Proton)"
-maintainer="Quietcraft <https://github.com/Ackerman-00>"
+maintainer="Clara Keller <https://github.com/clarajk>"
 license="GPL-3.0-or-later"
 homepage="https://github.com/Vysp3r/ProtonPlus"
 

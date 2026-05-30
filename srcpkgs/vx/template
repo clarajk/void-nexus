@@ -1,0 +1,18 @@
+pkgname=vx
+version=0.4.0
+revision=1
+archs="x86_64"
+short_desc="A small convenience wrapper for XBPS."
+maintainer="Clara Keller <https://github.com/clarajk>"
+license="MIT"
+homepage="https://github.com/clarajk/vx"
+distfiles="https://github.com/clarajk/vx/releases/download/v${version}/vx-x86_64-unknown-linux-musl.tar.gz"
+checksum=60f3b7af4e4e6ed9065c880e3552a4995024fb5a3a7a627abc66c96a97a4aec6
+
+_abyss_source=github-release
+_abyss_repo=clarajk/vx
+_abyss_strip=v
+
+do_install() {
+	vbin vx vx
+}

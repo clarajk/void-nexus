@@ -1,4 +1,3 @@
-# Template file for 'niri-git'
 pkgname=niri-git
 _commit=f9f43d826ab4014a7c302be28d7da33e12f5be37
 version=20260521
@@ -13,7 +12,7 @@ makedepends="eudev-libudev-devel libxkbcommon-devel libinput-devel libgbm-devel
 depends="wayland xwayland-satellite-git"
 checkdepends="wayland"
 short_desc="Scrollable-tiling Wayland compositor (Git Snapshot)"
-maintainer="Quietcraft <https://github.com/Ackerman-00>"
+maintainer="Clara Keller <https://github.com/clarajk>"
 license="GPL-3.0-or-later"
 homepage="https://github.com/niri-wm/niri"
 conflicts="niri>=0"
