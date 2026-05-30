@@ -21,11 +21,15 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/void-linux/void-glibc-full:latest
-      options: --privileged
     defaults:
       run:
         shell: bash
     steps:
+      - name: Identify self
+        shell: sh
+        run: |
+          id -u
+          whoami
       - name: Update XBPS and install dependencies
         shell: sh
         run: |
@@ -84,6 +88,20 @@ jobs:
             --srcpkgs ./abyss/srcpkgs \
             --binpkgs ./void-packages/hostdir/binpkgs \
             --output "$GITHUB_OUTPUT"
+      - name: Push changes
+        if: ${{ steps.plan.outputs.packages != '' }}
+        working-directory: ./abyss
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -u
+          if ! git diff --cached --quiet; then
+            git commit -m "auto-update: template refresh $(date -u '+%Y-%m-%d %H:%M:%S')"
+            git pull --rebase origin ${{ github.ref_name }}
+            git push origin HEAD:${{ github.ref_name }}
+          else
+            echo "No changes staged. Skipping commit."
+          fi
       - name: Build packages
         if: ${{ steps.plan.outputs.packages != '' }}
         working-directory: ./void-packages
