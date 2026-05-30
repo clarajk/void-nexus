@@ -75,6 +75,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         run: |
+          mkdir -p ./void-packages/hostdir/binpkgs
           dredge restore \
             --remote clarajk/abyss \
             --srcpkgs ./abyss/srcpkgs \
