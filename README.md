@@ -19,14 +19,14 @@
 **① Add the repository**
 
 ```bash
-echo 'repository=https://github.com/clarajk/void-nexus/releases/latest/download' \
+echo 'repository=https://github.com/clarajk/abyss/releases/latest/download' \
   | sudo tee /etc/xbps.d/10-nexus.conf
 ```
 
 ... or with [vx](https://github.com/clarajk/vx)
 
 ```bash
-vx repo add abyss https://github.com/clarajk/void-nexus/releases/latest/download
+vx repo add abyss https://github.com/clarajk/abyss/releases/latest/download
 ```
 
 **② Sync and trust the signing key**
