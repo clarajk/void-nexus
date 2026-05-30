@@ -40,6 +40,7 @@ jobs:
           xbps-install -Syu xbps
           xbps-install -yu
           xbps-install -y bash curl git grep openssl tar xz ca-certificates shadow sudo base-devel file github-cli zstd jq
+
       - name: Install dredge
         run: |
           curl -L -o dredge.tar.gz \
@@ -48,24 +49,28 @@ jobs:
           tar -xzf dredge.tar.gz
           chmod +x dredge
           install -Dm755 dredge /usr/local/bin/dredge
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           repository: clarajk/abyss
           fetch-depth: 1
           path: abyss
+
       - name: Update packages
         working-directory: ./abyss
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
         run: |
             dredge update --srcpkgs ./srcpkgs
+
       - name: Clone void-packages
         uses: actions/checkout@v4
         with:
           repository: void-linux/void-packages
           fetch-depth: 1
           path: void-packages
+
       - name: Prepare xbps-src
         working-directory: ./void-packages
         run: |
@@ -74,18 +79,11 @@ jobs:
           echo "XBPS_CHROOT_CMD=ethereal" >> etc/conf
           echo "XBPS_ALLOW_CHROOT_BREAKOUT=yes" >> etc/conf
           echo "XBPS_MAKEJOBS=$(nproc)" >> etc/conf
+
       - name: Copy abyss to void-packages
         run: |
           cp -r ./abyss/srcpkgs/. ./void-packages/srcpkgs/
-      - name: Restore packages
-        if: ${{ inputs.rebuild != true }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        run: |
-          dredge restore \
-            --remote clarajk/abyss \
-            --srcpkgs ./abyss/srcpkgs \
-            --dest ./void-packages/hostdir/binpkgs
+
       - name: Plan builds
         id: plan
         env:
@@ -103,6 +101,7 @@ jobs:
           fi
       
           dredge "${args[@]}"
+  
       - name: Push changes
         if: ${{ steps.plan.outputs.packages != '' }}
         working-directory: ./abyss
@@ -117,6 +116,7 @@ jobs:
           else
             echo "No changes staged. Skipping commit."
           fi
+
       - name: Build packages
         if: ${{ steps.plan.outputs.packages != '' }}
         working-directory: ./void-packages
@@ -124,6 +124,7 @@ jobs:
           for pkg in ${{ steps.plan.outputs.packages }}; do
             ./xbps-src pkg "$pkg"
           done
+
       - name: Sign packages
         working-directory: ./void-packages/hostdir/binpkgs
         run: |
@@ -134,7 +135,19 @@ jobs:
           for pkg in *.xbps; do
             xbps-rindex --privkey /tmp/private.pem --sign-pkg "$pkg" --signedby '[abyss] dredge build bot'
           done
+
+      - name: Restore packages
+        if: ${{ inputs.rebuild != true && steps.plan.outputs.packages != '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+        run: |
+          dredge restore \
+            --remote clarajk/abyss \
+            --srcpkgs ./abyss/srcpkgs \
+            --dest ./void-packages/hostdir/binpkgs
+
       - name: Index repository
+        if: ${{ steps.plan.outputs.packages != '' }}
         working-directory: ./void-packages/hostdir/binpkgs
         run: |
           xbps-rindex -f -a *.xbps
