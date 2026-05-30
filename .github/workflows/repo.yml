@@ -34,6 +34,10 @@ jobs:
           xbps-install -Syu xbps
           xbps-install -yu
           xbps-install -y bash curl git grep openssl tar xz ca-certificates shadow sudo base-devel file github-cli zstd jq
+      - name: Create builder user
+        run: |
+          useradd -m -u 1001 builder
+          chown -R builder:builder "$GITHUB_WORKSPACE"
       - name: Install dredge
         run: |
           curl -L -o dredge.tar.gz \
@@ -63,11 +67,7 @@ jobs:
       - name: Prepare void-packages
         working-directory: ./void-packages
         run: |
-          ln -s / masterdir
-          echo "x86_64" > /.xbps_chroot_init
-          echo "XBPS_CHROOT_CMD=ethereal" >> etc/conf
-          echo "XBPS_ALLOW_CHROOT_BREAKOUT=yes" >> etc/conf
-          echo "XBPS_MAKEJOBS=$(nproc)" >> etc/conf
+          sudo -u builder ./xbps-src binary-bootstrap
       - name: Copy abyss to void-packages
         run: |
           cp -r ./abyss/srcpkgs/. ./void-packages/srcpkgs/
@@ -108,7 +108,7 @@ jobs:
         working-directory: ./void-packages
         run: |
           for pkg in ${{ steps.plan.outputs.packages }}; do
-            ./xbps-src pkg "$pkg"
+            sudo -u builder ./xbps-src pkg "$pkg"
           done
       - name: Sign packages
         working-directory: ./void-packages/hostdir/binpkgs
