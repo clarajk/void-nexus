@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://voidlinux.org/assets/img/void_bg.png" width="80" />
+<img src="https://github.com/clarajk/abyss/blob/main/assets/abyss.png" width="80" />
 
 <h1>abyss</h1>
 
