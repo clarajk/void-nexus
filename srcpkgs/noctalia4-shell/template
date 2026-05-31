@@ -1,4 +1,4 @@
-pkgname=noctalia-shell
+pkgname=noctalia4-shell
 version=4.7.7
 revision=1
 hostmakedepends=""

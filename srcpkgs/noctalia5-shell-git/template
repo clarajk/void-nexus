@@ -1,0 +1,62 @@
+pkgname=noctalia5-shell-git
+version=20260531163855
+revision=1
+_commit=aca3d6a7ec07d5de24a8ea7f20c2ab8802092a35
+wrksrc="noctalia-shell-${_commit}"
+
+_abyss_source=git-head
+_abyss_repo="https://github.com/noctalia-dev/noctalia-shell.git"
+_abyss_branch=v5
+
+build_style=meson
+buildtype=release
+configure_args="-Db_ndebug=true"
+short_desc="Lightweight Wayland shell built directly on Wayland and OpenGL ES"
+maintainer="Clara Keller <https://github.com/clarajk>"
+license="MIT"
+homepage="https://github.com/noctalia-dev/noctalia-shell"
+
+distfiles="https://github.com/noctalia-dev/noctalia-shell/archive/${_commit}.tar.gz"
+checksum=2b6ee1594d97baa8bb10ead3f0d0b04d1ad43dab184b9eb03c541005e5f2ff1c
+
+# Conflict with 'noctalia' to prevent package collisions
+conflicts="noctalia>=0"
+provides="noctalia-${version}_${revision}"
+
+CXXFLAGS="-std=c++20"
+
+hostmakedepends="meson ninja pkg-config git curl"
+
+makedepends="
+ wayland-devel
+ wayland-protocols
+ libglvnd-devel
+ libepoxy-devel
+ cairo-devel
+ pango-devel
+ fontconfig-devel
+ freetype-devel
+ harfbuzz-devel
+ libxkbcommon-devel
+ pipewire-devel
+ libcurl-devel
+ pam-devel
+ libwebp-devel
+ basu-devel
+ sdbus-c++-devel
+ polkit-devel
+ librsvg-devel
+ jemalloc-devel
+ glib-devel
+ libqalculate-devel
+ libxml2-devel
+"
+
+post_install() {
+    vlicense LICENSE
+    vdoc README.md
+
+    if [ ! -x "${DESTDIR}/usr/bin/noctalia" ]; then
+        msg_error "Expected binary /usr/bin/noctalia not found.\n"
+    fi
+}
