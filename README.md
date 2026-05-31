@@ -20,7 +20,7 @@
 
 ```bash
 echo 'repository=https://github.com/clarajk/abyss/releases/latest/download' \
-  | sudo tee /etc/xbps.d/10-nexus.conf
+  | sudo tee /etc/xbps.d/10-abyss.conf
 ```
 
 ... or with [vx](https://github.com/clarajk/vx)
